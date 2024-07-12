@@ -4,5 +4,5 @@ SpeechRecognition==3.10.3
 streamlit==1.33.0
 google-generativeai
 portaudio19-dev
-pyaudio 
+
 
