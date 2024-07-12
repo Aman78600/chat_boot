@@ -1,4 +1,4 @@
-protobuf==5.27.2
+protobuf
 pyttsx3==2.90
 SpeechRecognition==3.10.3
 streamlit==1.33.0
