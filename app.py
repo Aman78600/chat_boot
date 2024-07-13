@@ -50,9 +50,9 @@ if audio:
     
     # Use the recognizer to convert audio to text
     with sr.AudioFile(audio_data) as source:
-        recorded_audio = recognizer.record(source)
+        recorded_audio = r.record(source)
         try:
-            question = recognizer.recognize_google(recorded_audio)
+            question = r.recognize_google(recorded_audio)
             response = model.generate_content('give me an answer in 40 to 80 words \nQuestion => ' + question).text
         
             # Start threading for text-to-speech and real-time text update
