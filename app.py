@@ -1,10 +1,11 @@
 import streamlit as st
 import google.generativeai as genai
 import speech_recognition as sr
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
 import pyttsx3
 import time
 import threading
-from audiorecorder import audiorecorder
+# from audiorecorder import audiorecorder
 
 # Configure the Generative AI model
 genai.configure(api_key='AIzaSyBgEWO0_xIuVPUWDQuQVvs8v3KtVHJY-7s')
@@ -12,10 +13,22 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Initialize the recognizer and microphone
 r = sr.Recognizer()
-mic_list = sr.Microphone.list_microphone_names()
-st.write("Available microphones:", mic_list)
+# mic_list = sr.Microphone.list_microphone_names()
+# st.write("Available microphones:", mic_list)
 
 # my_mic = 
+client_settings = ClientSettings(
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    media_stream_constraints={"audio": True, "video": False},
+)
+
+# Capture audio from the microphone
+webrtc_ctx = webrtc_streamer(
+    key="audio",
+    mode=WebRtcMode.SENDRECV,
+    client_settings=client_settings,
+)
+
 
 
 # Function to convert text to speech using pyttsx3
@@ -46,7 +59,9 @@ if st.button('Speak'):
     # with sr.Microphone(device_index=None) as source:
     st.write("Say something...")
         # audio = r.listen(source)
-    audio=audio = audiorecorder("Click to record", "Click to stop recording")
+    if webrtc_ctx.audio_receiver:
+        audio = webrtc_ctx.audio_receiver.get_frames(timeout=1)
+    # audio=audio = audiorecorder("Click to record", "Click to stop recording")
     
     try:
         # Convert speech to text and generate response
