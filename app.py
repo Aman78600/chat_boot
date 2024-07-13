@@ -14,7 +14,7 @@ if audio:
     st.audio(audio, format='audio/wav')
     
     # Convert the recorded audio to a BytesIO object
-    audio_data = BytesIO(audio)
+    audio_data = BytesIO(audio.getvalue())
     
     # Use the recognizer to convert audio to text
     with sr.AudioFile(audio_data) as source:
@@ -26,4 +26,3 @@ if audio:
             st.write("Google Speech Recognition could not understand the audio")
         except sr.RequestError as e:
             st.write(f"Could not request results from Google Speech Recognition service; {e}")
-
