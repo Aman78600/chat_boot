@@ -4,6 +4,7 @@ import speech_recognition as sr
 import pyttsx3
 import time
 import threading
+from streamlit_mic_recorder import mic_recorder
 
 html_string = "<script>navigator.mediaDevices.getUserMedia(audioIN)<script/>"
 
@@ -15,7 +16,7 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Initialize the recognizer and microphone
 r = sr.Recognizer()
-my_mic = sr.Microphone(device_index=1)
+# my_mic = sr.Microphone(device_index=1)
 
 # Function to convert text to speech using pyttsx3
 def text_to_speech(text):
@@ -42,9 +43,9 @@ def speak_and_print(text_,question):
 
 # Streamlit button to trigger speech recognition and response generation
 if st.button('Speak'):
-    with my_mic as source:
-        st.write("Say something...")
-        audio = r.listen(source)
+    # with my_mic as source:
+    st.write("Say something...")
+    audio = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording")
     
     try:
         # Convert speech to text and generate response
