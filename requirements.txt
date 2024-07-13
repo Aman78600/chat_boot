@@ -1,5 +1,5 @@
 streamlit==1.33.0
 streamlit-webrtc
-speech_recognition==3.10.3
+speech_recognition
 pyttsx3
 google-generativeai
