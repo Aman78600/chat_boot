@@ -39,24 +39,28 @@ def speak_and_print(text_,question):
         time.sleep(0.05)
     output_placeholder.write('')
     st.write(text_)
-    
-audio=mic_recorder(start_prompt="Start speeking", stop_prompt="Stop speeking") 
-# Streamlit button to trigger speech recognition and response generation
+# Record audio
+audio = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording")
 if audio:
-    # with my_mic as source:
-    # st.write("Say something...")
-    try:
-        # Convert speech to text and generate response
-        question = r.recognize_google(audio)
-        response = model.generate_content('give me an answer in 40 to 80 words \nQuestion => ' + question).text
+    st.audio(audio, format='audio/wav')
+    
+    # Convert the recorded audio to a BytesIO object
+    audio_data = BytesIO(audio)
+    
+    # Use the recognizer to convert audio to text
+    with sr.AudioFile(audio_data) as source:
+        recorded_audio = recognizer.record(source)
+        try:
+            question = recognizer.recognize_google(recorded_audio)
+            response = model.generate_content('give me an answer in 40 to 80 words \nQuestion => ' + question).text
         
-        # Start threading for text-to-speech and real-time text update
-        tts_thread = threading.Thread(target=text_to_speech, args=(response,))
-        tts_thread.start()
+            # Start threading for text-to-speech and real-time text update
+            tts_thread = threading.Thread(target=text_to_speech, args=(response,))
+            tts_thread.start()
 
-        speak_and_print(response,question)
+            speak_and_print(response,question)
 
-        tts_thread.join()
+            tts_thread.join()
         
-    except sr.UnknownValueError:
-        st.warning("Sorry, I couldn't understand what you said.")
+        except sr.UnknownValueError:
+            st.warning("Sorry, I couldn't understand what you said.")
