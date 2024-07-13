@@ -42,11 +42,9 @@ def speak_and_print(text_,question):
     
 
 # Streamlit button to trigger speech recognition and response generation
-if st.button('Speak'):
+if audio = mic_recorder(start_prompt="Start speeking", stop_prompt="Stop speeking"):
     # with my_mic as source:
-    st.write("Say something...")
-    audio = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording")
-    
+    # st.write("Say something...")
     try:
         # Convert speech to text and generate response
         question = r.recognize_google(audio)
