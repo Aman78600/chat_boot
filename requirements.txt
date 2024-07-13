@@ -3,3 +3,5 @@ streamlit-webrtc
 pyttsx3
 google-generativeai
 SpeechRecognition==3.10.3
+protobuf
+
