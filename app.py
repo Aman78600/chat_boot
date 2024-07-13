@@ -10,7 +10,7 @@ st.title("Speech to Text with Streamlit")
 # Record audio
 audio = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording")
 if audio:
-    st.audio(audio, format='audio/wav')
+    # st.audio(audio, format='audio/wav')
     
     # Save the audio to a file
     audio_file_path = "recorded_audio.wav"
