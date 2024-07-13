@@ -4,6 +4,7 @@ import speech_recognition as sr
 import pyttsx3
 import time
 import threading
+from audiorecorder import audiorecorder
 
 # Configure the Generative AI model
 genai.configure(api_key='AIzaSyBgEWO0_xIuVPUWDQuQVvs8v3KtVHJY-7s')
@@ -42,9 +43,10 @@ def speak_and_print(text_,question):
 
 # Streamlit button to trigger speech recognition and response generation
 if st.button('Speak'):
-    with sr.Microphone(device_index=None) as source:
-        st.write("Say something...")
-        audio = r.listen(source)
+    # with sr.Microphone(device_index=None) as source:
+    st.write("Say something...")
+        # audio = r.listen(source)
+    audio=audio = audiorecorder("Click to record", "Click to stop recording")
     
     try:
         # Convert speech to text and generate response
