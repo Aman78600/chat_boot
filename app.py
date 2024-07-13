@@ -6,7 +6,7 @@ import threading
 import google.generativeai as genai
 
 # Configure the Generative AI model
-genai.configure(api_key='YOUR_API_KEY')  # Replace with your actual API key
+genai.configure(api_key='AIzaSyBgEWO0_xIuVPUWDQuQVvs8v3KtVHJY-7s')  # Replace with your actual API key
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Function to convert text to speech using pyttsx3
