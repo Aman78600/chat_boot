@@ -35,12 +35,12 @@ if 1:
     # Capture audio from the microphone
     webrtc_ctx = webrtc_streamer(
         key="audio",
-        mode=WebRtcMode.SENDRECV,
+        # mode=WebRtcMode.SENDRECV,
         client_settings=client_settings,
     )
 
     if webrtc_ctx.audio_receiver:
-        audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
+        audio_frames = webrtc_ctx.audio_receiver(timeout=1) #.get_frames
         
         # Save audio frames to a file
         audio_path = "recorded_audio.wav"
