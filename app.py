@@ -5,6 +5,7 @@ import pyttsx3
 import time
 import threading
 from streamlit_mic_recorder import mic_recorder
+from io import BytesIO
 
 html_string = "<script>navigator.mediaDevices.getUserMedia(audioIN)<script/>"
 
