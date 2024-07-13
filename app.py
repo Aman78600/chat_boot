@@ -13,10 +13,9 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 r = sr.Recognizer()
 mic_list = sr.Microphone.list_microphone_names()
 st.write("Available microphones:", mic_list)
-try:
-    my_mic = sr.Microphone(device_index=None)
-except:
-    pass
+
+# my_mic = 
+
 
 # Function to convert text to speech using pyttsx3
 def text_to_speech(text):
@@ -43,7 +42,7 @@ def speak_and_print(text_,question):
 
 # Streamlit button to trigger speech recognition and response generation
 if st.button('Speak'):
-    with my_mic as source:
+    with sr.Microphone(device_index=None) as source:
         st.write("Say something...")
         audio = r.listen(source)
     
