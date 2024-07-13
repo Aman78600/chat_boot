@@ -1,45 +1,13 @@
 import streamlit as st
-import google.generativeai as genai
-import speech_recognition as sr
-import pyttsx3
-import time
-import threading
 from streamlit_mic_recorder import mic_recorder
+import speech_recognition as sr
 from io import BytesIO
 
-html_string = "<script>navigator.mediaDevices.getUserMedia(audioIN)<script/>"
+# Initialize recognizer
+recognizer = sr.Recognizer()
 
-st.markdown(html_string, unsafe_allow_html=True)
+st.title("Speech to Text with Streamlit")
 
-# Configure the Generative AI model
-genai.configure(api_key='AIzaSyBgEWO0_xIuVPUWDQuQVvs8v3KtVHJY-7s')
-model = genai.GenerativeModel('gemini-1.5-flash')
-
-# Initialize the recognizer and microphone
-r = sr.Recognizer()
-# my_mic = sr.Microphone(device_index=1)
-
-# Function to convert text to speech using pyttsx3
-def text_to_speech(text):
-    engine = pyttsx3.init()
-    voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[1].id)  # Change voice (experiment with indices)
-    engine.setProperty('rate', 150)  # Adjust speaking speed (words per minute)
-    engine.say(text)  # Speak the text
-    engine.runAndWait()  # Process and play the speech
-
-# Function to update Streamlit output in real-time
-def speak_and_print(text_,question):
-    st.write(question)
-    output_placeholder = st.empty()
-
-    t = ''
-    for i in text_:
-        t += i
-        output_placeholder.write(t)
-        time.sleep(0.05)
-    output_placeholder.write('')
-    st.write(text_)
 # Record audio
 audio = mic_recorder(start_prompt="Start recording", stop_prompt="Stop recording")
 if audio:
@@ -50,18 +18,12 @@ if audio:
     
     # Use the recognizer to convert audio to text
     with sr.AudioFile(audio_data) as source:
-        recorded_audio = r.record(source)
+        recorded_audio = recognizer.record(source)
         try:
-            question = r.recognize_google(recorded_audio)
-            response = model.generate_content('give me an answer in 40 to 80 words \nQuestion => ' + question).text
-        
-            # Start threading for text-to-speech and real-time text update
-            tts_thread = threading.Thread(target=text_to_speech, args=(response,))
-            tts_thread.start()
-
-            speak_and_print(response,question)
-
-            tts_thread.join()
-        
+            text = recognizer.recognize_google(recorded_audio)
+            st.write("Text from audio:", text)
         except sr.UnknownValueError:
-            st.warning("Sorry, I couldn't understand what you said.")
+            st.write("Google Speech Recognition could not understand the audio")
+        except sr.RequestError as e:
+            st.write(f"Could not request results from Google Speech Recognition service; {e}")
+
