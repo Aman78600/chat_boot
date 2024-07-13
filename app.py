@@ -26,7 +26,7 @@ def speak_and_print(response, question):
     text_to_speech(response)
 
 # Streamlit button to trigger speech recognition and response generation
-if st.button('Speak'):
+if 1:
     client_settings = ClientSettings(
         rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
         media_stream_constraints={"audio": True, "video": False},
