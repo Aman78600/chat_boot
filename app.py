@@ -42,7 +42,7 @@ def speak_and_print(text_,question):
     
 
 # Streamlit button to trigger speech recognition and response generation
-if audio = mic_recorder(start_prompt="Start speeking", stop_prompt="Stop speeking"):
+if wait (mic_recorder(start_prompt="Start speeking", stop_prompt="Stop speeking")) audio:
     # with my_mic as source:
     # st.write("Say something...")
     try:
