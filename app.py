@@ -1,13 +1,21 @@
 import streamlit as st
-import speech_recognition as sr
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, ClientSettings
-import pyttsx3
-import threading
 import google.generativeai as genai
+import speech_recognition as sr
+import pyttsx3
+import time
+import threading
+
+html_string = "<script>navigator.mediaDevices.getUserMedia(audioIN)<script/>"
+
+st.markdown(html_string, unsafe_allow_html=True)
 
 # Configure the Generative AI model
-genai.configure(api_key='AIzaSyBgEWO0_xIuVPUWDQuQVvs8v3KtVHJY-7s')  # Replace with your actual API key
+genai.configure(api_key='AIzaSyBgEWO0_xIuVPUWDQuQVvs8v3KtVHJY-7s')
 model = genai.GenerativeModel('gemini-1.5-flash')
+
+# Initialize the recognizer and microphone
+r = sr.Recognizer()
+my_mic = sr.Microphone(device_index=1)
 
 # Function to convert text to speech using pyttsx3
 def text_to_speech(text):
@@ -19,42 +27,37 @@ def text_to_speech(text):
     engine.runAndWait()  # Process and play the speech
 
 # Function to update Streamlit output in real-time
-def speak_and_print(response, question):
-    st.write(f"Question: {question}")
-    st.write(f"Response: {response}")
-    st.write("Text-to-Speech:")
-    text_to_speech(response)
+def speak_and_print(text_,question):
+    st.write(question)
+    output_placeholder = st.empty()
+
+    t = ''
+    for i in text_:
+        t += i
+        output_placeholder.write(t)
+        time.sleep(0.05)
+    output_placeholder.write('')
+    st.write(text_)
+    
 
 # Streamlit button to trigger speech recognition and response generation
-if 1:
-    client_settings = ClientSettings(
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-        media_stream_constraints={"audio": True, "video": False},
-    )
-
-    # Capture audio from the microphone
-    webrtc_ctx = webrtc_streamer(
-        key="audio",
-        # mode=WebRtcMode.SENDRECV,
-        client_settings=client_settings,
-    )
-
-    if webrtc_ctx.audio_receiver:
-        audio_frames = webrtc_ctx.audio_receiver(timeout=1) #.get_frames
+if st.button('Speak'):
+    with my_mic as source:
+        st.write("Say something...")
+        audio = r.listen(source)
+    
+    try:
+        # Convert speech to text and generate response
+        question = r.recognize_google(audio)
+        response = model.generate_content('give me an answer in 40 to 80 words \nQuestion => ' + question).text
         
-        # Save audio frames to a file
-        audio_path = "recorded_audio.wav"
-        with open(audio_path, "wb") as f:
-            f.write(b"".join([frame.to_ndarray() for frame in audio_frames]))
+        # Start threading for text-to-speech and real-time text update
+        tts_thread = threading.Thread(target=text_to_speech, args=(response,))
+        tts_thread.start()
 
-        # Recognize speech using SpeechRecognition
-        r = sr.Recognizer()
-        with sr.AudioFile(audio_path) as source:
-            audio_data = r.record(source)
-            question = r.recognize_google(audio_data)
+        speak_and_print(response,question)
 
-        # Generate response from AI model
-        response = model.generate_content(f"Give me an answer in 40 to 80 words.\nQuestion => {question}").text
-
-        # Update Streamlit output with response and text-to-speech
-        speak_and_print(response, question)
+        tts_thread.join()
+        
+    except sr.UnknownValueError:
+        st.warning("Sorry, I couldn't understand what you said.")
