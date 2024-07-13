@@ -17,17 +17,7 @@ r = sr.Recognizer()
 # st.write("Available microphones:", mic_list)
 
 # my_mic = 
-client_settings = ClientSettings(
-    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-    media_stream_constraints={"audio": True, "video": False},
-)
 
-# Capture audio from the microphone
-webrtc_ctx = webrtc_streamer(
-    key="audio",
-    mode=WebRtcMode.SENDRECV,
-    client_settings=client_settings,
-)
 
 
 
@@ -57,7 +47,18 @@ def speak_and_print(text_,question):
 # Streamlit button to trigger speech recognition and response generation
 if st.button('Speak'):
     # with sr.Microphone(device_index=None) as source:
-    st.write("Say something...")
+    client_settings = ClientSettings(
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    media_stream_constraints={"audio": True, "video": False},
+    )
+
+# Capture audio from the microphone
+    webrtc_ctx = webrtc_streamer(
+    key="audio",
+    mode=WebRtcMode.SENDRECV,
+    client_settings=client_settings,
+    )
+    # st.write("Say something...")
         # audio = r.listen(source)
     if webrtc_ctx.audio_receiver:
         audio = webrtc_ctx.audio_receiver.get_frames(timeout=1)
