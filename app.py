@@ -11,7 +11,12 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Initialize the recognizer and microphone
 r = sr.Recognizer()
-my_mic = sr.Microphone(device_index=None)
+mic_list = sr.Microphone.list_microphone_names()
+st.write("Available microphones:", mic_list)
+try:
+    my_mic = sr.Microphone(device_index=None)
+except:
+    pass
 
 # Function to convert text to speech using pyttsx3
 def text_to_speech(text):
